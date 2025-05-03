@@ -1,0 +1,212 @@
+-- Services
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local flying = false
+local bodyVelocity = nil
+local xrayEnabled = false
+local noGravity = false
+
+-- GUI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ZundaHubUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 380)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -190)
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.3
+mainFrame.BorderColor3 = Color3.new(0, 0, 0)
+mainFrame.Draggable = true
+mainFrame.Active = true
+mainFrame.Parent = screenGui
+
+local cornerMain = Instance.new("UICorner")
+cornerMain.CornerRadius = UDim.new(0, 12)
+cornerMain.Parent = mainFrame
+
+-- Scrolling Frame for the buttons (content area)
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, 0, 1, -40)  -- This makes it scrollable
+scrollFrame.Position = UDim2.new(0, 0, 0, 40)  -- Starts below the top bar
+scrollFrame.Parent = mainFrame
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1000)  -- Initial canvas size
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.BackgroundTransparency = 1  -- Make the background of the scrolling frame transparent
+
+local scrollCorner = Instance.new("UICorner")
+scrollCorner.CornerRadius = UDim.new(0, 12)
+scrollCorner.Parent = scrollFrame
+
+-- Title with top center alignment (Adjusted)
+local title = Instance.new("TextLabel")
+title.Text = "ZUNDA HUB"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.Size = UDim2.new(0, 300, 0, 30)
+title.Position = UDim2.new(0.5, -150, 0, 5)  -- Adjusted position to be higher
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.Parent = mainFrame
+
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 20
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.BackgroundColor3 = Color3.fromHex("#EF3636")
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5) -- Adjusted top padding
+closeButton.Parent = mainFrame
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeButton
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Credits Text
+local creditsText = Instance.new("TextLabel")
+creditsText.Text = "by zundachiikawa on tiktok, rbx146245famli on roblox. hm: chatgpt ZUNDAMON IS GOATED🔥"
+creditsText.Font = Enum.Font.Gotham
+creditsText.TextSize = 14
+creditsText.TextColor3 = Color3.new(1, 1, 1)
+creditsText.BackgroundTransparency = 1
+creditsText.Size = UDim2.new(1, -20, 0, 50)
+creditsText.Position = UDim2.new(0, 10, 0, 320)  -- Below the rejoin button
+creditsText.TextWrapped = true
+creditsText.TextYAlignment = Enum.TextYAlignment.Top
+creditsText.Parent = scrollFrame
+
+local creditsCorner = Instance.new("UICorner")
+creditsCorner.CornerRadius = UDim.new(0, 10)
+creditsCorner.Parent = creditsText
+
+-- Button Setup Function
+local function setupButton(button)
+    button.AutoButtonColor = false
+    button.BackgroundColor3 = Color3.fromRGB(135, 206, 235)
+    button.TextColor3 = Color3.new(0, 0, 0)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 16
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = button
+
+    local originalColor = button.BackgroundColor3
+    local hoverColor = Color3.fromRGB(100, 180, 210)
+
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = hoverColor
+    end)
+
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = originalColor
+    end)
+end
+
+-- Fly Button
+local flyButton = Instance.new("TextButton")
+flyButton.Text = "Fly"
+flyButton.Size = UDim2.new(1, -20, 0, 40)
+flyButton.Position = UDim2.new(0, 10, 0, 10)
+flyButton.Parent = scrollFrame
+setupButton(flyButton)
+
+-- Stop Flying Button
+local stopButton = Instance.new("TextButton")
+stopButton.Text = "Stop Flying"
+stopButton.Size = UDim2.new(1, -20, 0, 40)
+stopButton.Position = UDim2.new(0, 10, 0, 60)
+stopButton.Parent = scrollFrame
+setupButton(stopButton)
+
+-- Rejoin Button
+local rejoinButton = Instance.new("TextButton")
+rejoinButton.Text = "rj lol"
+rejoinButton.Size = UDim2.new(1, -20, 0, 40)
+rejoinButton.Position = UDim2.new(0, 10, 0, 110)
+rejoinButton.BackgroundColor3 = Color3.fromHex("#EF4536")
+rejoinButton.Parent = scrollFrame
+setupButton(rejoinButton)
+
+rejoinButton.MouseButton1Click:Connect(function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, player)
+end)
+
+-- X-ray Button (Makes parts transparent)
+local xrayButton = Instance.new("TextButton")
+xrayButton.Text = "X-ray"
+xrayButton.Size = UDim2.new(1, -20, 0, 40)
+xrayButton.Position = UDim2.new(0, 10, 0, 160)
+xrayButton.Parent = scrollFrame
+setupButton(xrayButton)
+
+-- Fly Logic
+local function startFlying()
+    if flying then return end
+    flying = true
+
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+    -- Disable fall animation
+    if humanoid then
+        for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
+            if track.Name:lower():find("fall") then
+                track:Stop()
+            end
+        end
+    end
+
+    -- Velocity setup
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+    bodyVelocity.Velocity = Vector3.zero
+    bodyVelocity.P = 1e4
+    bodyVelocity.Parent = hrp
+
+    RunService:BindToRenderStep("CameraFly", Enum.RenderPriority.Character.Value + 1, function()
+        if not flying or not hrp then return end
+        local cam = workspace.CurrentCamera
+        local direction = cam.CFrame.LookVector
+
+        bodyVelocity.Velocity = direction * 50
+
+        -- Rotate player to face movement direction
+        hrp.CFrame = CFrame.new(hrp.Position, hrp.Position + direction)
+    end)
+end
+
+-- Stop Flying
+local function stopFlying()
+    flying = false
+    RunService:UnbindFromRenderStep("CameraFly")
+    if bodyVelocity then
+        bodyVelocity:Destroy()
+        bodyVelocity = nil
+    end
+end
+
+-- Button Actions
+flyButton.MouseButton1Click:Connect(startFlying)
+stopButton.MouseButton1Click:Connect(stopFlying)
+xrayButton.MouseButton1Click:Connect(function()
+    if xrayEnabled then
+        disableXray()
+    else
+        enableXray()
+    end
+end)
