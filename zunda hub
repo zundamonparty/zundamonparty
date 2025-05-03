@@ -131,11 +131,36 @@ stopButton.Position = UDim2.new(0, 10, 0, 60)
 stopButton.Parent = scrollFrame
 setupButton(stopButton)
 
--- Rejoin Button
+-- Teleport Buttons
+local teleportButton1 = Instance.new("TextButton")
+teleportButton1.Text = "Teleport to Game 1"
+teleportButton1.Size = UDim2.new(1, -20, 0, 40)
+teleportButton1.Position = UDim2.new(0, 10, 0, 110)
+teleportButton1.Parent = scrollFrame
+setupButton(teleportButton1)
+
+teleportButton1.MouseButton1Click:Connect(function()
+    -- Replace this with actual place ID or teleportation logic
+    game:GetService("TeleportService"):Teleport(1234567890, player) -- Example place ID
+end)
+
+local teleportButton2 = Instance.new("TextButton")
+teleportButton2.Text = "Teleport to Game 2"
+teleportButton2.Size = UDim2.new(1, -20, 0, 40)
+teleportButton2.Position = UDim2.new(0, 10, 0, 160)
+teleportButton2.Parent = scrollFrame
+setupButton(teleportButton2)
+
+teleportButton2.MouseButton1Click:Connect(function()
+    -- Replace this with actual place ID or teleportation logic
+    game:GetService("TeleportService"):Teleport(9876543210, player) -- Example place ID
+end)
+
+-- Rejoin Button (Teleport button)
 local rejoinButton = Instance.new("TextButton")
-rejoinButton.Text = "rj lol"
+rejoinButton.Text = "Rejoin"
 rejoinButton.Size = UDim2.new(1, -20, 0, 40)
-rejoinButton.Position = UDim2.new(0, 10, 0, 110)
+rejoinButton.Position = UDim2.new(0, 10, 0, 210)
 rejoinButton.BackgroundColor3 = Color3.fromHex("#EF4536")
 rejoinButton.Parent = scrollFrame
 setupButton(rejoinButton)
@@ -143,9 +168,6 @@ setupButton(rejoinButton)
 rejoinButton.MouseButton1Click:Connect(function()
     game:GetService("TeleportService"):Teleport(game.PlaceId, player)
 end)
-
--- Remove X-ray Button
--- (Simply omit any related logic to remove the X-ray button)
 
 -- Fly Logic
 local function startFlying()
@@ -198,9 +220,10 @@ end
 flyButton.MouseButton1Click:Connect(startFlying)
 stopButton.MouseButton1Click:Connect(stopFlying)
 
--- Disable Scrolling if there are no buttons left
+-- Update Scrolling
 local function updateScrolling()
-    if scrollFrame.Parent:GetChildren() == 1 then -- No buttons are left
+    -- Check if there are any buttons in the scroll frame
+    if #scrollFrame:GetChildren() <= 1 then -- Only the credits text is left
         scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)  -- Remove scroll area
         scrollFrame.ScrollBarThickness = 0  -- Disable scrollbar
     else
