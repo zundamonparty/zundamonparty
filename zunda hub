@@ -7,7 +7,6 @@ local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 local flying = false
 local bodyVelocity = nil
-local xrayEnabled = false
 local noGravity = false
 
 -- GUI Setup
@@ -145,13 +144,8 @@ rejoinButton.MouseButton1Click:Connect(function()
     game:GetService("TeleportService"):Teleport(game.PlaceId, player)
 end)
 
--- X-ray Button (Makes parts transparent)
-local xrayButton = Instance.new("TextButton")
-xrayButton.Text = "X-ray"
-xrayButton.Size = UDim2.new(1, -20, 0, 40)
-xrayButton.Position = UDim2.new(0, 10, 0, 160)
-xrayButton.Parent = scrollFrame
-setupButton(xrayButton)
+-- Remove X-ray Button
+-- (Simply omit any related logic to remove the X-ray button)
 
 -- Fly Logic
 local function startFlying()
@@ -203,10 +197,17 @@ end
 -- Button Actions
 flyButton.MouseButton1Click:Connect(startFlying)
 stopButton.MouseButton1Click:Connect(stopFlying)
-xrayButton.MouseButton1Click:Connect(function()
-    if xrayEnabled then
-        disableXray()
+
+-- Disable Scrolling if there are no buttons left
+local function updateScrolling()
+    if scrollFrame.Parent:GetChildren() == 1 then -- No buttons are left
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)  -- Remove scroll area
+        scrollFrame.ScrollBarThickness = 0  -- Disable scrollbar
     else
-        enableXray()
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1000)  -- Default canvas size
+        scrollFrame.ScrollBarThickness = 8  -- Enable scrollbar
     end
-end)
+end
+
+-- Call this function to check if scrolling is needed
+updateScrolling()
