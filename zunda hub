@@ -133,27 +133,27 @@ setupButton(stopButton)
 
 -- Teleport Buttons
 local teleportButton1 = Instance.new("TextButton")
-teleportButton1.Text = "Teleport to Game 1"
+teleportButton1.Text = "Can we play tco?"
 teleportButton1.Size = UDim2.new(1, -20, 0, 40)
 teleportButton1.Position = UDim2.new(0, 10, 0, 110)
 teleportButton1.Parent = scrollFrame
 setupButton(teleportButton1)
 
 teleportButton1.MouseButton1Click:Connect(function()
-    -- Replace this with actual place ID or teleportation logic
-    game:GetService("TeleportService"):Teleport(1234567890, player) -- Example place ID
+    -- Teleports to the first game
+    game:GetService("TeleportService"):Teleport(11137575513, player) -- Game ID 11137575513
 end)
 
 local teleportButton2 = Instance.new("TextButton")
-teleportButton2.Text = "Teleport to Game 2"
+teleportButton2.Text = "Dandys world in the big 25🥀"
 teleportButton2.Size = UDim2.new(1, -20, 0, 40)
 teleportButton2.Position = UDim2.new(0, 10, 0, 160)
 teleportButton2.Parent = scrollFrame
 setupButton(teleportButton2)
 
 teleportButton2.MouseButton1Click:Connect(function()
-    -- Replace this with actual place ID or teleportation logic
-    game:GetService("TeleportService"):Teleport(9876543210, player) -- Example place ID
+    -- Teleports to the second game
+    game:GetService("TeleportService"):Teleport(16116270224, player) -- Game ID 16116270224
 end)
 
 -- Rejoin Button (Teleport button)
